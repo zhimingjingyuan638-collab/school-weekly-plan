@@ -22,6 +22,38 @@
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen">
+  <!-- 2026-10 新しい版のご案内（旧版はこのまま使えます） -->
+  <div id="new-version-notice" style="background:#eef2ff;border-bottom:1px solid #c7d2fe;padding:10px 16px;font-size:14px;line-height:1.7;color:#312e81;font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;">
+    📣 この週案アプリには<b>新しい版</b>があります。
+    <a href="https://zhimingjingyuan638-collab.github.io/weekly-plan-lite/" style="color:#4338ca;font-weight:bold;text-decoration:underline;">無料の新しい版</a>（土曜・日ごとのメモ・単元名の自動表示）／
+    <a href="https://note.com/guiguinokiroku/n/n4939e9c52270" style="color:#4338ca;font-weight:bold;text-decoration:underline;">PCとスマホで同期できる版（note）</a>
+    <br>
+    <span style="font-size:12px;color:#4f46e5;">この版のデータは、右のボタンで書き出すと、同期できる版の「設定」→「バックアップを読み込む」でそのまま引き継げます。</span>
+    <button type="button" onclick="exportOldWeekPlan()" style="margin-left:6px;padding:3px 10px;font-size:12px;font-weight:bold;color:#fff;background:#4f46e5;border:none;border-radius:8px;cursor:pointer;">この版のデータを書き出す</button>
+  </div>
+  <script>
+    // 旧版（v1）のデータを、新しい版が読み込める形（jukan-integrated）で書き出す
+    function exportOldWeekPlan() {
+      function read(key, fallback) {
+        try { var s = localStorage.getItem(key); return s ? JSON.parse(s) : fallback; } catch (e) { return fallback; }
+      }
+      var payload = {
+        _app: 'jukan-integrated', _version: 1, exportedAt: new Date().toISOString(),
+        settings:   read('weekPlanSettings', null),
+        annualData: read('weekPlanAnnual', null),
+        timetable:  read('weekPlanTimetable', null),
+        allData:    read('weekPlanData', {})
+      };
+      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      var d = new Date();
+      a.href = url;
+      a.download = '週案_旧版バックアップ_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
   <div id="root"></div>
 
   <script type="text/babel">
